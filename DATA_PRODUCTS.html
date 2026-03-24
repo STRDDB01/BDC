@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP BDC - Data Products | Stratesys</title>
+    <style>
+        /* Variables de color SAP & Stratesys (Enterprise) */
+        :root {
+            --primary-blue: #0070f2;
+            --dark-blue: #0a1f44;
+            --accent-cyan: #00c4e5;
+            --accent-gold: #f0ab00;
+            --bg-body: #f4f7f9;
+            --bg-white: #ffffff;
+            --text-main: #1a202c;
+            --text-muted: #4a5568;
+            --border-light: #e2e8f0;
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 40px rgba(10, 31, 68, 0.08);
+            --radius-lg: 12px;
+        }
+
+        /* Reset & Tipografía */
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; 
+            color: var(--text-main); 
+            line-height: 1.8; 
+            margin: 0; 
+            padding: 0; 
+            background-color: var(--bg-body); 
+            -webkit-font-smoothing: antialiased;
+        }
+        h1, h2, h3, h4 { margin-top: 0; font-weight: 700; color: var(--dark-blue); line-height: 1.2; }
+        p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem; }
+
+        /* Header / Hero Section */
+        header { 
+            background: linear-gradient(135deg, var(--dark-blue) 0%, #0d2b5e 100%);
+            color: var(--bg-white); 
+            padding: 5rem 2rem 8rem; 
+            text-align: center; 
+            position: relative;
+            overflow: hidden;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(0,196,229,0.1) 0%, transparent 60%);
+            z-index: 1;
+        }
+        .header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .brand-logo {
+            max-width: 240px;
+            margin-bottom: 3rem;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+        header h1 { 
+            color: var(--bg-white);
+            font-size: 3.8rem; 
+            margin-bottom: 1.5rem; 
+            letter-spacing: -1px;
+        }
+        header p { 
+            color: #cbd5e1;
+            font-size: 1.35rem; 
+            max-width: 850px; 
+            margin: 0 auto; 
+            font-weight: 300;
+        }
+
+        /* Contenedor Principal */
+        main { 
+            padding: 0 2rem; 
+            max-width: 1300px; 
+            margin: 2rem auto 5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Cabecera de Secciones */
+        .section-header {
+            margin-bottom: 4rem;
+            text-align: left;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 1.5rem;
+        }
+        .section-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .section-badge {
+            display: inline-block;
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 1rem;
+        }
+
+        /* Paneles de Arquitectura de Ancho Completo */
+        .architecture-panel {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-left: 6px solid var(--primary-blue);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .architecture-panel:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        .arch-header {
+            background: #f8fafc;
+            padding: 2.5rem 3rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .arch-icon {
+            font-size: 3rem;
+            background: var(--bg-white);
+            width: 80px; height: 80px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .arch-header h3 {
+            font-size: 2rem;
+            margin: 0;
+            color: var(--dark-blue);
+        }
+        .arch-body {
+            padding: 3rem;
+        }
+        .arch-body p {
+            font-size: 1.15rem;
+            max-width: 1000px;
+        }
+        .arch-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .arch-feature-item {
+            background: var(--bg-body);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-cyan);
+        }
+        .arch-feature-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-blue);
+        }
+        .arch-feature-item p {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        /* Sección de Valor y Reusabilidad */
+        .value-container {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 4rem;
+            margin-bottom: 5rem;
+        }
+        .value-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+        .value-item {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .value-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .value-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .value-content p {
+            font-size: 1.15rem;
+        }
+
+        /* Grid de Beneficios de Negocio */
+        .ai-benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .ai-benefit-card {
+            background: var(--bg-body);
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: left;
+            border-top: 4px solid var(--accent-gold);
+        }
+        .ai-benefit-card h4 {
+            color: var(--dark-blue);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer { 
+            background-color: var(--bg-white); 
+            text-align: center; 
+            padding: 4rem 2rem; 
+            border-top: 1px solid var(--border-light);
+            color: var(--text-muted);
+        }
+        footer img { max-width: 180px; opacity: 0.5; margin-bottom: 1.5rem; filter: grayscale(100%); transition: opacity 0.3s ease; }
+        footer img:hover { opacity: 1; filter: none; }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .value-item { flex-direction: column; gap: 1rem; }
+        }
+        @media (max-width: 768px) {
+            header { padding: 4rem 1rem 6rem; }
+            header h1 { font-size: 2.8rem; }
+            .arch-header { flex-direction: column; text-align: center; padding: 2rem; }
+            .arch-body, .value-container { padding: 2rem; }
+            .section-header h2 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="https://www.stratesys-ts.com/wp-content/themes/str_theme/assets/img/str_logo_trans.png" alt="Stratesys Logo" class="brand-logo">
+            <h1>Data Products en BDC</h1>
+            <p>El activo fundamental del Business Data Fabric. Descubre cómo transformar datos crudos en productos empaquetados, gobernados y listos para ser consumidos por el negocio y la Inteligencia Artificial.</p>
+        </div>
+    </header>
+
+    <main>
+        
+        <!-- SECCIÓN 1: EL CONCEPTO DE DATA PRODUCT -->
+        <section>
+            <div class="section-header">
+                <span class="section-badge">Business Semantics</span>
+                <h2>El Fin de los "Data Swamps"</h2>
+                <p style="max-width: 900px;">Tradicionalmente, las áreas de IT se limitaban a extraer tablas de bases de datos y volcarlas en Data Lakes masivos, perdiendo toda la lógica de negocio. SAP BDC cambia el paradigma: en lugar de mover tablas crudas, creamos y gestionamos <strong>Data Products</strong> empaquetados y enriquecidos con contexto empresarial.</p>
+            </div>
+            
+            <!-- Panel ¿Qué es un Data Product? -->
+            <div class="architecture-panel">
+                <div class="arch-header">
+                    <div class="arch-icon">📦</div>
+                    <h3>El Nuevo Estándar: ¿Qué es un Data Product?</h3>
+                </div>
+                <div class="arch-body">
+                    <p>Un <em>Data Product</em> en SAP BDC es un conjunto de datos altamente refinado, basado en información ingerida de aplicaciones core (ERP, Finanzas, HCM). No es solo una vista o una tabla; es un activo empaquetado que incluye los datos, sus metadatos descriptivos, las políticas de seguridad y una interfaz de programación (API/SQL) para su consumo, todo tratado como un producto de software real con ciclo de vida propio.</p>
+                    <div class="arch-features">
+                        <div class="arch-feature-item">
+                            <h4>Contexto de Negocio Intacto</h4>
+                            <p>Las reglas complejas del ERP (ej. conversiones de moneda, jerarquías de clientes, estatus de documentos) se mantienen incrustadas en el producto.</p>
+                        </div>
+                        <div class="arch-feature-item">
+                            <h4>Contratos de Datos (Data Contracts)</h4>
+                            <p>Garantizan a los consumidores (LOBs, Científicos de Datos) que la estructura y calidad del producto no cambiará inesperadamente.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Data Product Studio -->
+            <div class="architecture-panel" style="border-left-color: var(--accent-cyan);">
+                <div class="arch-header">
+                    <div class="arch-icon">🛠️</div>
+                    <h3>Data Product Studio & Exchange</h3>
+                </div>
+                <div class="arch-body">
+                    <p>SAP BDC incorpora herramientas nativas diseñadas específicamente para escalar esta filosofía. El <em>Data Product Studio</em> es el entorno donde los ingenieros de datos definen, empaquetan y publican estos activos, habilitando un Marketplace o intercambio interno ("Exchange") donde los analistas pueden descubrirlos de forma intuitiva.</p>
+                    <div class="arch-features">
+                        <div class="arch-feature-item">
+                            <h4>Marketplace Interno</h4>
+                            <p>Un escaparate visual y gobernado donde los usuarios de negocio pueden "comprar" o suscribirse a conjuntos de datos certificados.</p>
+                        </div>
+                        <div class="arch-feature-item">
+                            <h4>De BW a Data Products</h4>
+                            <p>Los clientes pueden exponer directamente sus InfoProviders e inversiones heredadas en SAP BW como nuevos productos de datos en BDC.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Consumo y Zero-Copy -->
+            <div class="architecture-panel" style="border-left-color: var(--accent-gold);">
+                <div class="arch-header">
+                    <div class="arch-icon">🔗</div>
+                    <h3>Consumo Universal y Zero-Copy</h3>
+                </div>
+                <div class="arch-body">
+                    <p>El verdadero valor de un producto reside en cómo se consume. Los Data Products de SAP están diseñados para ser interoperables. Pueden ser analizados nativamente en SAP Analytics Cloud, integrados en <em>Intelligent Apps</em>, o compartidos sin necesidad de movimiento de datos (Zero-Copy) con el ecosistema abierto mediante SAP BDC Connect.</p>
+                    <div class="arch-features">
+                        <div class="arch-feature-item">
+                            <h4>Consumo Transparente</h4>
+                            <p>Listos para ser consultados vía SQL o consumidos directamente en plataformas como Databricks, Snowflake o Google BigQuery.</p>
+                        </div>
+                        <div class="arch-feature-item">
+                            <h4>Reutilización Máxima</h4>
+                            <p>Un solo Data Product (ej. "Ventas Netas Consolidadas") puede alimentar un Dashboard, un modelo de Machine Learning y un flujo de trabajo simultáneamente.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- SECCIÓN 2: EL COMBUSTIBLE DE LAS INTELLIGENT APPS -->
+        <section>
+            <div class="section-header">
+                <span class="section-badge">AI Readiness</span>
+                <h2>El Combustible de las Intelligent Apps y SAP Joule</h2>
+                <p>La adopción de modelos de Inteligencia Artificial (AI) e Inteligencia Generativa (GenAI) fracasa repetidamente cuando los datos subyacentes carecen de significado semántico. Los <em>Data Products</em> son el prerrequisito técnico indispensable para una IA que entregue valor de negocio real.</p>
+            </div>
+            
+            <div class="value-container">
+                <div class="value-grid">
+                    
+                    <div class="value-item" style="border-bottom: none; padding-bottom: 0;">
+                        <div class="value-content" style="width: 100%;">
+                            <h3 style="margin-bottom: 1.5rem;">Acelerando la Innovación Impulsada por IA</h3>
+                            <p style="font-size: 1.15rem; margin-bottom: 2.5rem;">Las aplicaciones inteligentes pre-construidas por SAP (Intelligent Apps) y los modelos personalizados creados por los científicos de datos en SAP Databricks no parten de cero. Se construyen directamente sobre el catálogo de Data Products de BDC.</p>
+                            
+                            <div class="ai-benefits-grid">
+                                <div class="ai-benefit-card">
+                                    <h4>Fundación para Intelligent Apps</h4>
+                                    <p>Aplicaciones enfocadas en Finanzas, Supply Chain o HR (People Intelligence) se despliegan de forma acelerada porque consumen directamente los modelos semánticos estandarizados.</p>
+                                </div>
+                                <div class="ai-benefit-card" style="border-top-color: var(--primary-blue);">
+                                    <h4>SAP Joule Anclado a la Verdad</h4>
+                                    <p>Cuando los usuarios realizan preguntas complejas a SAP Joule en lenguaje natural, el copiloto consulta los Data Products gobernados, asegurando respuestas precisas y matemáticamente correctas.</p>
+                                </div>
+                                <div class="ai-benefit-card" style="border-top-color: var(--accent-cyan);">
+                                    <h4>Time-to-Value para Data Science</h4>
+                                    <p>Los equipos de datos pasan de invertir el 80% de su tiempo limpiando y uniendo tablas, a enfocarse directamente en el entrenamiento de modelos predictivos de alto valor.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <img src="https://www.stratesys-ts.com/wp-content/themes/str_theme/assets/img/str_logo_trans.png" alt="Stratesys Logo Gris">
+        <p>&copy; 2026 Stratesys Technology Solutions All Rights Reserved - Confidential.</p>
+        <p style="font-size: 0.9rem;">Portal de Conocimiento Arquitectónico SAP Business Data Cloud | <strong>technology 4GOOD</strong></p>
+    </footer>
+
+</body>
+</html>
