@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP BDC - IA: Databricks & Joule | Stratesys</title>
+    <style>
+        /* Variables de color SAP & Stratesys (Enterprise) */
+        :root {
+            --primary-blue: #0070f2;
+            --dark-blue: #0a1f44;
+            --accent-cyan: #00c4e5;
+            --accent-gold: #f0ab00;
+            --bg-body: #f4f7f9;
+            --bg-white: #ffffff;
+            --text-main: #1a202c;
+            --text-muted: #4a5568;
+            --border-light: #e2e8f0;
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 40px rgba(10, 31, 68, 0.08);
+            --radius-lg: 12px;
+        }
+
+        /* Reset & Tipografía */
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; 
+            color: var(--text-main); 
+            line-height: 1.8; 
+            margin: 0; 
+            padding: 0; 
+            background-color: var(--bg-body); 
+            -webkit-font-smoothing: antialiased;
+        }
+        h1, h2, h3, h4 { margin-top: 0; font-weight: 700; color: var(--dark-blue); line-height: 1.2; }
+        p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem; }
+
+        /* Header / Hero Section */
+        header { 
+            background: linear-gradient(135deg, var(--dark-blue) 0%, #0d2b5e 100%);
+            color: var(--bg-white); 
+            padding: 5rem 2rem 8rem; 
+            text-align: center; 
+            position: relative;
+            overflow: hidden;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(0,196,229,0.1) 0%, transparent 60%);
+            z-index: 1;
+        }
+        .header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .brand-logo {
+            max-width: 240px;
+            margin-bottom: 3rem;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+        header h1 { 
+            color: var(--bg-white);
+            font-size: 3.8rem; 
+            margin-bottom: 1.5rem; 
+            letter-spacing: -1px;
+        }
+        header p { 
+            color: #cbd5e1;
+            font-size: 1.35rem; 
+            max-width: 850px; 
+            margin: 0 auto; 
+            font-weight: 300;
+        }
+
+        /* Contenedor Principal */
+        main { 
+            padding: 0 2rem; 
+            max-width: 1300px; 
+            margin: 2rem auto 5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Cabecera de Secciones */
+        .section-header {
+            margin-bottom: 4rem;
+            text-align: left;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 1.5rem;
+        }
+        .section-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .section-badge {
+            display: inline-block;
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 1rem;
+        }
+
+        /* Paneles de Arquitectura de Ancho Completo */
+        .architecture-panel {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-left: 6px solid var(--primary-blue);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .architecture-panel:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        .arch-header {
+            background: #f8fafc;
+            padding: 2.5rem 3rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .arch-icon {
+            font-size: 3rem;
+            background: var(--bg-white);
+            width: 80px; height: 80px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .arch-header h3 {
+            font-size: 2rem;
+            margin: 0;
+            color: var(--dark-blue);
+        }
+        .arch-body {
+            padding: 3rem;
+        }
+        .arch-body p {
+            font-size: 1.15rem;
+            max-width: 1000px;
+        }
+        .arch-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .arch-feature-item {
+            background: var(--bg-body);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-cyan);
+        }
+        .arch-feature-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-blue);
+        }
+        .arch-feature-item p {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        /* Sección de Casos de Uso (Grid 3 columnas) */
+        .value-container {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 4rem;
+            margin-bottom: 5rem;
+        }
+        .value-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+        .value-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .value-content p {
+            font-size: 1.15rem;
+        }
+
+        .ai-benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .ai-benefit-card {
+            background: var(--bg-body);
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: left;
+            border-top: 4px solid var(--accent-gold);
+        }
+        .ai-benefit-card h4 {
+            color: var(--dark-blue);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Stratesys Accelerators */
+        .stratesys-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            border-radius: var(--radius-lg);
+            padding: 5rem 4rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+            margin-bottom: 5rem;
+        }
+        .thunder-logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-blue);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .thunder-logo span { color: var(--accent-cyan); }
+        .thunder-intro {
+            font-size: 1.25rem;
+            max-width: 900px;
+            margin-bottom: 2rem;
+        }
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.2rem;
+            margin-top: 2rem;
+        }
+        .use-case-item {
+            background: var(--bg-white);
+            padding: 1.2rem 1.5rem;
+            border-radius: 8px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark-blue);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            border-left: 4px solid var(--primary-blue);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+        .use-case-item::before {
+            content: '🎯';
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        .use-case-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-left-color: var(--accent-gold);
+        }
+
+        /* Footer */
+        footer { 
+            background-color: var(--bg-white); 
+            text-align: center; 
+            padding: 4rem 2rem; 
+            border-top: 1px solid var(--border-light);
+            color: var(--text-muted);
+        }
+        footer img { max-width: 180px; opacity: 0.5; margin-bottom: 1.5rem; filter: grayscale(100%); transition: opacity 0.3s ease; }
+        footer img:hover { opacity: 1; filter: none; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header { padding: 4rem 1rem 6rem; }
+            header h1 { font-size: 2.8rem; }
+            .arch-header { flex-direction: column; text-align: center; padding: 2rem; }
+            .arch-body, .value-container { padding: 2rem; }
+            .section-header h2 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="https://www.stratesys-ts.com/wp-content/themes/str_theme/assets/img/str_logo_trans.png" alt="Stratesys Logo" class="brand-logo">
+            <h1>IA en BDC: Databricks & Joule</h1>
+            <p>Potencia la Inteligencia Artificial y el Machine Learning con todo el contexto de tu negocio. Una plataforma unificada para modelos predictivos Pro-Code e IA Generativa conversacional.</p>
+        </div>
+    </header>
+
+    <main>
+        
+        <!-- SECCIÓN 1: SAP DATABRICKS (PRO-CODE) -->
+        <section>
+            <div class="section-header">
+                <span class="section-badge">Data Science & Engineering</span>
+                <h2>SAP Databricks: El motor Pro-Code integrado</h2>
+                <p style="max-width: 900px;">SAP Databricks no es una herramienta externa conectada de forma precaria; es un entorno analítico nativo dentro de SAP Business Data Cloud. Proporciona a los ingenieros y científicos de datos las capacidades líderes de la industria para procesar flujos complejos y entrenar modelos, operando siempre sobre datos gobernados.</p>
+            </div>
+            
+            <!-- Panel Delta Sharing & Pipelines -->
+            <div class="architecture-panel">
+                <div class="arch-header">
+                    <div class="arch-icon">⚙️</div>
+                    <h3>Ingeniería de Datos y Delta Sharing</h3>
+                </div>
+                <div class="arch-body">
+                    <p>Mediante el protocolo abierto <em>Delta Sharing</em>, SAP Databricks consume la información de SAP Datasphere utilizando una arquitectura <strong>Zero-Copy</strong>. Los ingenieros de datos pueden escribir *pipelines* avanzados en Apache Spark o SQL sin la latencia ni los altos costes asociados a la extracción y carga masiva (ETL) de tablas hacia Data Lakes independientes.</p>
+                    <div class="arch-features">
+                        <div class="arch-feature-item">
+                            <h4>Reducción de Latencia</h4>
+                            <p>Procesamiento de volúmenes masivos de datos en tiempo cuasi-real, manteniendo la información sincronizada con el sistema transaccional origen (S/4HANA).</p>
+                        </div>
+                        <div class="arch-feature-item">
+                            <h4>Consumo Transparente</h4>
+                            <p>SAP Databricks está incluido en la suscripción base de BDC y se factura mediante el mismo pool unificado de <em>Capacity Units</em>, sin licencias de terceros.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Machine Learning -->
+            <div class="architecture-panel" style="border-left-color: var(--accent-cyan);">
+                <div class="arch-header">
+                    <div class="arch-icon">🧠</div>
+                    <h3>Machine Learning y Modelado Predictivo</h3>
+                </div>
+                <div class="arch-body">
+                    <p>Los equipos de Data Science pueden desarrollar, entrenar y desplegar modelos de Machine Learning (ML) personalizados (ej. predicción de demanda, detección de fraude) aprovechando la riqueza semántica de los <em>Data Products</em> de SAP. Al entrenar sobre datos limpios y gobernados, se reduce drásticamente el <em>Time-to-Value</em> de los proyectos de IA.</p>
+                    <div class="arch-features">
+                        <div class="arch-feature-item">
+                            <h4>MLOps Integrado</h4>
+                            <p>Gestión completa del ciclo de vida de los modelos de IA, desde la experimentación hasta la producción y monitorización continua.</p>
+                        </div>
+                        <div class="arch-feature-item">
+                            <h4>Acción Inmediata</h4>
+                            <p>Los resultados de las predicciones de ML se retroalimentan a la capa semántica de BDC para enriquecer los dashboards o accionar flujos de trabajo.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- SECCIÓN 2: SAP JOULE (IA GENERATIVA) -->
+        <section>
+            <div class="section-header">
+                <span class="section-badge">Generative AI Copilot</span>
+                <h2>SAP Joule: Analítica conversacional en contexto</h2>
+                <p>SAP Joule es el copiloto de IA Generativa verdaderamente adaptado al ámbito corporativo. Integrado profundamente en el tejido de BDC, permite a cualquier usuario de negocio interactuar con la complejidad de sus datos empresariales utilizando un lenguaje natural y sencillo.</p>
+            </div>
+
+            <!-- Panel Joule Conversacional -->
+            <div class="architecture-panel" style="border-left-color: var(--accent-gold);">
+                <div class="arch-header">
+                    <div class="arch-icon">💬</div>
+                    <h3>Interacción en Lenguaje Natural</h3>
+                </div>
+                <div class="arch-body">
+                    <p>Los usuarios de negocio ya no necesitan depender exclusivamente de perfiles técnicos para extraer valor. Pueden formular preguntas analíticas complejas (ej. <em>"¿Cuál es el margen de beneficio esperado para la región EMEA en el Q3 si aumentamos el gasto en marketing un 10%?"</em>) y SAP Joule traducirá esa intención a consultas precisas sobre los datos subyacentes.</p>
+                    <div class="arch-features">
+                        <div class="arch-feature-item">
+                            <h4>Democratización Analítica</h4>
+                            <p>Rompe la barrera técnica, permitiendo a directivos y analistas de LOB obtener respuestas inmediatas y visualizaciones generadas al vuelo.</p>
+                        </div>
+                        <div class="arch-feature-item">
+                            <h4>Automatización de Metadatos</h4>
+                            <p>Joule también asiste a los ingenieros recomendando relaciones entre tablas y generando automáticamente descripciones para el Catálogo de Datos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- SECCIÓN 3: LA VENTAJA DE LA CONFIANZA -->
+        <section>
+            <div class="value-container">
+                <div class="value-grid">
+                    <div class="value-content" style="width: 100%;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--dark-blue);">La Solución a las Alucinaciones de la IA</h3>
+                        <p style="font-size: 1.15rem; margin-bottom: 2.5rem;">El mayor riesgo de la Inteligencia Artificial en la empresa son las "alucinaciones" (generación de información falsa pero verosímil). La sinergia entre Databricks, Joule y la capa semántica de BDC resuelve estructuralmente este problema.</p>
+                        
+                        <div class="ai-benefits-grid">
+                            <div class="ai-benefit-card" style="border-top-color: var(--primary-blue);">
+                                <h4>Anclaje al Glosario (Grounding)</h4>
+                                <p>SAP Joule no inventa respuestas basadas en conocimiento genérico de internet. Sus modelos de lenguaje (LLMs) están anclados estrictamente a la lógica financiera y operativa de tus <em>Data Products</em>.</p>
+                            </div>
+                            <div class="ai-benefit-card" style="border-top-color: var(--accent-cyan);">
+                                <h4>Seguridad por Diseño</h4>
+                                <p>La IA respeta el modelo de autorizaciones centralizado de SAP BDC. Joule nunca responderá a una pregunta si el usuario no tiene los permisos para visualizar esos datos en el sistema origen.</p>
+                            </div>
+                            <div class="ai-benefit-card" style="border-top-color: var(--accent-gold);">
+                                <h4>Explicabilidad Continua</h4>
+                                <p>Tanto los modelos generados en Databricks como las respuestas de Joule proporcionan trazabilidad y linaje, permitiendo al usuario auditar de qué origen y de qué KPI se obtuvo la información.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: ACELERADORES STRATESYS -->
+        <section class="stratesys-section">
+            <div class="thunder-logo">
+                ⚡ Stratesys <span>AI Accelerators</span>
+            </div>
+            <h2 style="font-size: 2.6rem; margin-bottom: 1.5rem; color: var(--dark-blue);">Aceleradores y Casos de Uso de IA</h2>
+            <p class="thunder-intro">Para maximizar el valor de tu inversión en SAP BDC, Databricks y Joule, en Stratesys contamos con un extenso portfolio de aceleradores pre-construidos y casos de uso de IA listos para desplegar, reduciendo drásticamente el <em>Time-to-Market</em>:</p>
+            
+            <div class="use-cases-grid">
+                <div class="use-case-item">Brecha Salarial</div>
+                <div class="use-case-item">Demand Forecast</div>
+                <div class="use-case-item">P&L Predictor</div>
+                <div class="use-case-item">People Analytics</div>
+                <div class="use-case-item">Predictive Maintenance</div>
+                <div class="use-case-item">Supply Chain Optimization</div>
+                <div class="use-case-item">Customer 360 / Churn</div>
+                <div class="use-case-item">Real-Time Financial Reporting</div>
+                <div class="use-case-item">Inventory Optimization</div>
+                <div class="use-case-item">Fraud Detection</div>
+                <div class="use-case-item">Supplier Performance</div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <img src="https://www.stratesys-ts.com/wp-content/themes/str_theme/assets/img/str_logo_trans.png" alt="Stratesys Logo Gris">
+        <p>&copy; 2026 Stratesys Technology Solutions All Rights Reserved - Confidential.</p>
+        <p style="font-size: 0.9rem;">Portal de Conocimiento Arquitectónico SAP Business Data Cloud | <strong>technology 4GOOD</strong></p>
+    </footer>
+
+</body>
+</html>
