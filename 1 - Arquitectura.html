@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP BDC - Arquitectura, Licenciamiento y Roadmap | Stratesys</title>
+    <style>
+        /* Variables de color SAP & Stratesys (Enterprise) */
+        :root {
+            --primary-blue: #0070f2;
+            --dark-blue: #0a1f44;
+            --accent-cyan: #00c4e5;
+            --accent-gold: #f0ab00;
+            --bg-body: #f4f7f9;
+            --bg-white: #ffffff;
+            --text-main: #1a202c;
+            --text-muted: #4a5568;
+            --border-light: #e2e8f0;
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 40px rgba(10, 31, 68, 0.08);
+            --radius-lg: 12px;
+        }
+
+        /* Reset & Tipografía */
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; 
+            color: var(--text-main); 
+            line-height: 1.8; 
+            margin: 0; 
+            padding: 0; 
+            background-color: var(--bg-body); 
+            -webkit-font-smoothing: antialiased;
+        }
+        h1, h2, h3, h4 { margin-top: 0; font-weight: 700; color: var(--dark-blue); line-height: 1.2; }
+        p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem; }
+
+        /* Header / Hero Section */
+        header { 
+            background: linear-gradient(135deg, var(--dark-blue) 0%, #0d2b5e 100%);
+            color: var(--bg-white); 
+            padding: 5rem 2rem 8rem; 
+            text-align: center; 
+            position: relative;
+            overflow: hidden;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(0,196,229,0.1) 0%, transparent 60%);
+            z-index: 1;
+        }
+        .header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .brand-logo {
+            max-width: 240px;
+            margin-bottom: 3rem;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+        header h1 { 
+            color: var(--bg-white);
+            font-size: 3.8rem; 
+            margin-bottom: 1.5rem; 
+            letter-spacing: -1px;
+        }
+        header p { 
+            color: #cbd5e1;
+            font-size: 1.35rem; 
+            max-width: 850px; 
+            margin: 0 auto; 
+            font-weight: 300;
+        }
+
+        /* Contenedor Principal */
+        main { 
+            padding: 0 2rem; 
+            max-width: 1300px; 
+            margin: 2rem auto 5rem; /* Margen negativo eliminado para evitar superposición */
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Cabecera de Secciones */
+        .section-header {
+            margin-bottom: 4rem;
+            text-align: left;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 1.5rem;
+        }
+        .section-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .section-badge {
+            display: inline-block;
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 1rem;
+        }
+
+        /* Paneles de Arquitectura de Ancho Completo */
+        .architecture-panel {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-left: 6px solid var(--primary-blue);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .architecture-panel:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        .arch-header {
+            background: #f8fafc;
+            padding: 2.5rem 3rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .arch-icon {
+            font-size: 3rem;
+            background: var(--bg-white);
+            width: 80px; height: 80px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .arch-header h3 {
+            font-size: 2rem;
+            margin: 0;
+            color: var(--dark-blue);
+        }
+        .arch-body {
+            padding: 3rem;
+        }
+        .arch-body p {
+            font-size: 1.15rem;
+            max-width: 1000px;
+        }
+        .arch-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .arch-feature-item {
+            background: var(--bg-body);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-cyan);
+        }
+        .arch-feature-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-blue);
+        }
+        .arch-feature-item p {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        /* Sección de Licenciamiento */
+        .licensing-container {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 4rem;
+            margin-bottom: 5rem;
+        }
+        .licensing-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+        .licensing-item {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .licensing-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .license-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--border-light);
+            line-height: 1;
+        }
+        .license-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .license-content p {
+            font-size: 1.15rem;
+        }
+
+        /* Sección Stratesys Thunder */
+        .stratesys-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            border-radius: var(--radius-lg);
+            padding: 5rem 4rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+        }
+        .thunder-logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-blue);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .thunder-logo span { color: var(--accent-cyan); }
+        .thunder-intro {
+            font-size: 1.25rem;
+            max-width: 900px;
+            margin-bottom: 4rem;
+        }
+        
+        .roadmap-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        .roadmap-step {
+            background: var(--bg-white);
+            padding: 3rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            border-left: 6px solid var(--dark-blue);
+        }
+        .roadmap-step:nth-child(even) {
+            border-left-color: var(--accent-cyan);
+        }
+        .step-indicator {
+            flex-shrink: 0;
+            text-align: center;
+        }
+        .step-indicator .phase {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary-blue);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .step-indicator .title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--dark-blue);
+            line-height: 1.1;
+        }
+        .step-content {
+            border-left: 1px solid var(--border-light);
+            padding-left: 3rem;
+        }
+        .step-content h4 {
+            font-size: 1.4rem;
+            color: var(--accent-gold);
+            margin-bottom: 1rem;
+        }
+
+        /* Tabla de Licenciamiento CPEA */
+        .metrics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            background: var(--bg-white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        .metrics-table th {
+            background: var(--dark-blue);
+            color: var(--bg-white);
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.95rem;
+        }
+        .metrics-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-main);
+        }
+        .metrics-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Footer */
+        footer { 
+            background-color: var(--bg-white); 
+            text-align: center; 
+            padding: 4rem 2rem; 
+            border-top: 1px solid var(--border-light);
+            color: var(--text-muted);
+        }
+        footer img { max-width: 180px; opacity: 0.5; margin-bottom: 1.5rem; filter: grayscale(100%); transition: opacity 0.3s ease; }
+        footer img:hover { opacity: 1; filter: none; }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .roadmap-step { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+            .step-content { border-left: none; padding-left: 0; border-top: 1px solid var(--border-light); padding-top: 1.5rem; }
+            .licensing-item { flex-direction: column; gap: 1rem; }
+        }
+        @media (max-width: 768px) {
+            header { padding: 4rem 1rem 6rem; }
+            header h1 { font-size: 2.8rem; }
+            .arch-header { flex-direction: column; text-align: center; padding: 2rem; }
+            .arch-body, .licensing-container, .stratesys-section { padding: 2rem; }
+            .section-header h2 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="https://www.stratesys-ts.com/wp-content/themes/str_theme/assets/img/str_logo_trans.png" alt="Stratesys Logo" class="brand-logo">
+            <h1>Arquitectura & Licenciamiento BDC</h1>
+            <p>Descubre en detalle cómo SAP Business Data Cloud democratiza el dato de forma segura, eliminando silos y estableciendo una base sólida para la Inteligencia Artificial Empresarial.</p>
+        </div>
+    </header>
+
+    <main>
+        
+        <!-- SECCIÓN 1: COMPONENTES ARQUITECTÓNICOS (ANCHO COMPLETO) -->
+        <section>
+            <div class="section-header">
+                <span class="section-badge">Business Data Fabric</span>
+                <h2>Pilares Fundamentales de la Arquitectura</h2>
+                <p style="max-width: 900px;">SAP Business Data Cloud (BDC) es una evolución arquitectónica que trasciende el tradicional Data Warehouse. Está diseñado de extremo a extremo para resolver el mayor desafío analítico actual: la pérdida de contexto de negocio al extraer datos de los sistemas transaccionales.</p>
+            </div>
+            
+            <!-- Panel Datasphere -->
+            <div class="architecture-panel">
+                <div class="arch-header">
+                    <div class="arch-icon">🌐</div>
+                    <h3>SAP Datasphere: La Capa Semántica Central</h3>
+                </div>
+                <div class="arch-body">
+                    <p>SAP Datasphere constituye el motor lógico de toda la plataforma. A diferencia de los enfoques tradicionales que requieren la extracción y copia masiva de datos (ETL), Datasphere actúa como un tejido de datos (<em>Data Fabric</em>) que armoniza modelos analíticos y transaccionales, manteniendo intacta la lógica de negocio subyacente de los sistemas SAP.</p>
+                    <div class="arch-features">
+                        <div class="arch-feature-item">
+                            <h4>Armonización sin replicación</h4>
+                            <p>Federación de datos en tiempo real a través de entornos Cloud y On-Premise, reduciendo drásticamente los costes de almacenamiento y procesamiento.</p>
+                        </div>
+                        <div class="arch-feature-item">
+                            <h4>Catálogo Integrado</h4>
+                            <p>Democratización segura del dato mediante herramientas de descubrimiento y linaje que empoderan a los usuarios de negocio.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Analytics Cloud -->
+            <div class="architecture-panel" style="border-left-color: var(--accent-cyan);">
+                <div class="arch-header">
+                    <div class="arch-icon">📊</div>
+                    <h3>SAP Analytics Cloud (SAC): Consumo y Planificación</h3>
+                </div>
+                <div class="arch-body">
+                    <p>SAC es la capa de consumo nativa y definitiva dentro de BDC. No se limita a la visualización de datos estáticos; proporciona un entorno integral donde convergen la inteligencia empresarial, el análisis predictivo y, crucialmente, la planificación corporativa (Enterprise Planning).</p>
+                    <div class="arch-features">
+                        <div class="arch-feature-item">
+                            <h4>Simulaciones What-If</h4>
+                            <p>Capacidad para crear escenarios predictivos complejos y reescribir datos de planificación directamente sobre los modelos subyacentes.</p>
+                        </div>
+                        <div class="arch-feature-item">
+                            <h4>Integración Nativa</h4>
+                            <p>Consume los <em>Data Products</em> directamente sin necesidad de reconstruir jerarquías o metadatos, garantizando una versión única de la verdad.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel BW Modernization -->
+            <div class="architecture-panel" style="border-left-color: var(--accent-gold);">
+                <div class="arch-header">
+                    <div class="arch-icon">🏛️</div>
+                    <h3>SAP BW Modernization (Private Cloud)</h3>
+                </div>
+                <div class="arch-body">
+                    <p>Para organizaciones con un fuerte legado analítico, BDC ofrece la ruta definitiva de modernización. Mediante la Private Cloud Edition, los clientes protegen décadas de inversión en modelado de SAP BW o BW/4HANA, trasladando sus infraestructuras a un entorno SaaS escalable.</p>
+                    <div class="arch-features">
+                        <div class="arch-feature-item">
+                            <h4>Protección de la Inversión</h4>
+                            <p>El esfuerzo invertido en rutinas ABAP, InfoProviders y lógicas complejas se preserva y moderniza sin necesidad de reingeniería desde cero.</p>
+                        </div>
+                        <div class="arch-feature-item">
+                            <h4>De BW a Data Products</h4>
+                            <p>Los modelos históricos se exponen a través de BDC como nuevos productos de datos, listos para ser consumidos por modelos de IA modernos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Databricks & Intelligent Apps -->
+            <div class="architecture-panel" style="border-left-color: var(--dark-blue);">
+                <div class="arch-header">
+                    <div class="arch-icon">🧠</div>
+                    <h3>SAP Databricks & Intelligent Apps</h3>
+                </div>
+                <div class="arch-body">
+                    <p>SAP BDC incorpora el ecosistema <em>Pro-Code</em> más potente del mercado. SAP Databricks proporciona a los científicos de datos y arquitectos de IA una plataforma nativa y unificada. A su vez, las <em>Intelligent Apps</em> consumen esta IA para entregar aplicaciones de negocio pre-paquetizadas (ej. optimización de capital de trabajo, resiliencia de la cadena de suministro).</p>
+                    <div class="arch-features">
+                        <div class="arch-feature-item">
+                            <h4>Zero-Copy con Delta Sharing</h4>
+                            <p>Acceso directo a la riqueza semántica de SAP sin latencia ni costosos pipelines ETL de extracción hacia Data Lakes externos.</p>
+                        </div>
+                        <div class="arch-feature-item">
+                            <h4>Aceleración del Valor</h4>
+                            <p>Modelos de Machine Learning entrenados directamente sobre el catálogo de datos gobernado de SAP BDC.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: LICENCIAMIENTO ESTRATÉGICO -->
+        <section>
+            <div class="section-header">
+                <span class="section-badge">Estrategia Comercial</span>
+                <h2>Modelo de Consumo y Licenciamiento (CPEA)</h2>
+                <p>SAP Business Data Cloud utiliza un modelo ágil y escalable basado en el consumo (Cloud Platform Enterprise Agreement). Todos los servicios integrados se provisionan a través de una métrica unificada, eliminando la complejidad de las licencias tradicionales.</p>
+            </div>
+            
+            <div class="licensing-container" style="padding: 3rem;">
+                <div class="licensing-grid">
+                    
+                    <div class="licensing-item" style="border-bottom: none; padding-bottom: 0;">
+                        <div class="license-content" style="width: 100%;">
+                            <h3 style="font-size: 2.2rem; color: var(--dark-blue); margin-bottom: 1.5rem;">Detalle de Consumo por Servicio</h3>
+                            <p style="font-size: 1.15rem; margin-bottom: 2.5rem;">A continuación se detalla cómo se aplica el licenciamiento (por consumo o por usuario) para los distintos componentes de SAP Business Data Cloud (BDC):</p>
+                            
+                            <table class="metrics-table">
+                                <thead>
+                                    <tr>
+                                        <th>Servicio</th>
+                                        <th>Capacity Units por consumo</th>
+                                        <th>Capacity Units por Usuario</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>SAP Business Data Cloud Core</strong></td>
+                                        <td>Sí</td>
+                                        <td>No</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SAP Datasphere</strong></td>
+                                        <td>Sí</td>
+                                        <td>No</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SAP Analytics Cloud (SAC) - BI</strong></td>
+                                        <td>No</td>
+                                        <td>Sí</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SAP Analytics Cloud (SAC) - Planificación</strong></td>
+                                        <td>No</td>
+                                        <td>Sí</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SAP BW/4HANA Private Cloud Edition (PCE)</strong></td>
+                                        <td>Sí</td>
+                                        <td>No</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SAP Databricks (AI/ML)</strong></td>
+                                        <td>Sí</td>
+                                        <td>No</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SAP BDC Connect</strong></td>
+                                        <td>Sí</td>
+                                        <td>No</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Intelligent Apps</strong></td>
+                                        <td>Sí</td>
+                                        <td>Sí</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: ROADMAP STRATESYS (DETALLADO) -->
+        <section class="stratesys-section">
+            <h2 style="font-size: 2.6rem; margin-bottom: 1.5rem; color: var(--dark-blue);">Metodología <span style="color: var(--primary-blue);">Highway to Cloud</span></h2>
+            <p class="thunder-intro">Aseguramos el éxito de tu transformación a BDC. Como <strong>HUB Tecnológico de Europa y América</strong>, con más de 1.500 clientes y operaciones globales, Stratesys ha desarrollado una metodología que convierte la adopción en un proceso mecánico, predecible y sin riesgos.</p>
+            
+            <div class="roadmap-container">
+                
+                <!-- Paso 0: THUNDER (Gratuito) -->
+                <div class="roadmap-step" style="border-left-color: var(--accent-gold); background: #fffdf5;">
+                    <div class="step-indicator">
+                        <span class="phase" style="color: var(--accent-gold);">Paso Previo</span>
+                        <span class="title" style="font-size: 1.8rem; line-height: 1;">SAP BDC<br>THUNDER</span>
+                    </div>
+                    <div class="step-content">
+                        <h4 style="color: var(--accent-gold);">Assessment Básico y Gratuito</h4>
+                        <p>Antes de iniciar el proyecto, ejecutamos "SAP BDC THUNDER". Se trata de una <strong>evaluación básica inicial sin coste</strong> para el cliente. En ella analizamos la madurez analítica y entregamos un informe personalizado que permite justificar el encaje del <em>Business Data Fabric</em> en tu organización antes de comenzar con la fase de inmersión profunda.</p>
+                    </div>
+                </div>
+
+                <!-- Fase 1 -->
+                <div class="roadmap-step">
+                    <div class="step-indicator">
+                        <span class="phase">Fase 01</span>
+                        <span class="title">Discovery</span>
+                    </div>
+                    <div class="step-content">
+                        <h4>"Deep Dive In" & Evaluación As-Is</h4>
+                        <p>Diseñamos una inmersión inusualmente amplia. Nuestro objetivo principal es <strong>anticipar cualquier dificultad</strong> (gaps funcionales, código no compatible, riesgos). Realizamos una recopilación exhaustiva de tu arquitectura de datos, dimensionamos correctamente las Capacity Units necesarias, y entregamos un Business Case detallado con demostraciones prácticas.</p>
+                    </div>
+                </div>
+
+                <!-- Fase 2 -->
+                <div class="roadmap-step">
+                    <div class="step-indicator">
+                        <span class="phase">Fase 02</span>
+                        <span class="title">Prepare & Deploy</span>
+                    </div>
+                    <div class="step-content">
+                        <h4>"Highway TO BE": Ingeniería y Modelado</h4>
+                        <p>Ejecutamos la hoja de ruta sin fricciones. Implementamos la plataforma con un enfoque "Value-based". Configuramos la gobernanza, la integración nativa de SAP Databricks y la creación de los <em>Data Products</em>, asegurando que la conversión técnica (create/conversion) sea estructurada y mecánica.</p>
+                    </div>
+                </div>
+
+                <!-- Fase 3 -->
+                <div class="roadmap-step">
+                    <div class="step-indicator">
+                        <span class="phase">Fase 03</span>
+                        <span class="title">Run & Evolve</span>
+                    </div>
+                    <div class="step-content">
+                        <h4>Democratización y Escalabilidad</h4>
+                        <p>Aseguramos un Go-Live fluido con soporte intensivo. Una vez que la infraestructura central opera de forma estable, habilitamos la democratización de la información hacia el negocio (LOBs) y empoderamos a tu equipo para escalar activando <em>Intelligent Apps</em> y el copiloto de IA SAP Joule.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <img src="https://www.stratesys-ts.com/wp-content/themes/str_theme/assets/img/str_logo_trans.png" alt="Stratesys Logo Gris">
+        <p>&copy; 2026 Stratesys Technology Solutions All Rights Reserved - Confidential.</p>
+        <p style="font-size: 0.9rem;">Portal de Conocimiento Arquitectónico SAP Business Data Cloud | <strong>technology 4GOOD</strong></p>
+    </footer>
+
+</body>
+</html>
