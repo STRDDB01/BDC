@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAP BDC - Data Governance | Stratesys</title>
+    <style>
+        /* Variables de color SAP & Stratesys (Enterprise) */
+        :root {
+            --primary-blue: #0070f2;
+            --dark-blue: #0a1f44;
+            --accent-cyan: #00c4e5;
+            --accent-gold: #f0ab00;
+            --bg-body: #f4f7f9;
+            --bg-white: #ffffff;
+            --text-main: #1a202c;
+            --text-muted: #4a5568;
+            --border-light: #e2e8f0;
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 40px rgba(10, 31, 68, 0.08);
+            --radius-lg: 12px;
+        }
+
+        /* Reset & Tipografía */
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; 
+            color: var(--text-main); 
+            line-height: 1.8; 
+            margin: 0; 
+            padding: 0; 
+            background-color: var(--bg-body); 
+            -webkit-font-smoothing: antialiased;
+        }
+        h1, h2, h3, h4 { margin-top: 0; font-weight: 700; color: var(--dark-blue); line-height: 1.2; }
+        p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 1.5rem; }
+
+        /* Header / Hero Section */
+        header { 
+            background: linear-gradient(135deg, var(--dark-blue) 0%, #0d2b5e 100%);
+            color: var(--bg-white); 
+            padding: 5rem 2rem 8rem; 
+            text-align: center; 
+            position: relative;
+            overflow: hidden;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(0,196,229,0.1) 0%, transparent 60%);
+            z-index: 1;
+        }
+        .header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .brand-logo {
+            max-width: 240px;
+            margin-bottom: 3rem;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+        header h1 { 
+            color: var(--bg-white);
+            font-size: 3.8rem; 
+            margin-bottom: 1.5rem; 
+            letter-spacing: -1px;
+        }
+        header p { 
+            color: #cbd5e1;
+            font-size: 1.35rem; 
+            max-width: 850px; 
+            margin: 0 auto; 
+            font-weight: 300;
+        }
+
+        /* Contenedor Principal */
+        main { 
+            padding: 0 2rem; 
+            max-width: 1300px; 
+            margin: 2rem auto 5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Cabecera de Secciones */
+        .section-header {
+            margin-bottom: 4rem;
+            text-align: left;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 1.5rem;
+        }
+        .section-header h2 {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .section-badge {
+            display: inline-block;
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 1rem;
+        }
+
+        /* Paneles de Arquitectura de Ancho Completo */
+        .architecture-panel {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-left: 6px solid var(--primary-blue);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .architecture-panel:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        .arch-header {
+            background: #f8fafc;
+            padding: 2.5rem 3rem;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .arch-icon {
+            font-size: 3rem;
+            background: var(--bg-white);
+            width: 80px; height: 80px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        .arch-header h3 {
+            font-size: 2rem;
+            margin: 0;
+            color: var(--dark-blue);
+        }
+        .arch-body {
+            padding: 3rem;
+        }
+        .arch-body p {
+            font-size: 1.15rem;
+            max-width: 1000px;
+        }
+        .arch-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .arch-feature-item {
+            background: var(--bg-body);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--accent-cyan);
+        }
+        .arch-feature-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-blue);
+        }
+        .arch-feature-item p {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        /* Sección de Valor y Confianza IA */
+        .value-container {
+            background: var(--bg-white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 4rem;
+            margin-bottom: 5rem;
+        }
+        .value-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+        .value-item {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+            padding-bottom: 3rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .value-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .value-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--border-light);
+            line-height: 1;
+        }
+        .value-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .value-content p {
+            font-size: 1.15rem;
+        }
+
+        /* Grid de Beneficios IA */
+        .ai-benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .ai-benefit-card {
+            background: var(--bg-body);
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: left;
+            border-top: 4px solid var(--accent-gold);
+        }
+        .ai-benefit-card h4 {
+            color: var(--dark-blue);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer { 
+            background-color: var(--bg-white); 
+            text-align: center; 
+            padding: 4rem 2rem; 
+            border-top: 1px solid var(--border-light);
+            color: var(--text-muted);
+        }
+        footer img { max-width: 180px; opacity: 0.5; margin-bottom: 1.5rem; filter: grayscale(100%); transition: opacity 0.3s ease; }
+        footer img:hover { opacity: 1; filter: none; }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .value-item { flex-direction: column; gap: 1rem; }
+        }
+        @media (max-width: 768px) {
+            header { padding: 4rem 1rem 6rem; }
+            header h1 { font-size: 2.8rem; }
+            .arch-header { flex-direction: column; text-align: center; padding: 2rem; }
+            .arch-body, .value-container { padding: 2rem; }
+            .section-header h2 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <img src="https://www.stratesys-ts.com/wp-content/themes/str_theme/assets/img/str_logo_trans.png" alt="Stratesys Logo" class="brand-logo">
+            <h1>Data Governance en BDC</h1>
+            <p>Asegura la confianza, calidad y seguridad de tus datos empresariales. Descubre cómo SAP Business Data Cloud centraliza el catálogo y el control de accesos para preparar a tu organización hacia la Inteligencia Artificial.</p>
+        </div>
+    </header>
+
+    <main>
+        
+        <!-- SECCIÓN 1: PILARES DE GOBERNANZA -->
+        <section>
+            <div class="section-header">
+                <span class="section-badge">Agile Governance</span>
+                <h2>Gobernanza de Datos Ágil y Centralizada</h2>
+                <p style="max-width: 900px;">El ecosistema de SAP BDC rompe el mito de que la innovación rápida requiere sacrificar el control. La plataforma integra la gobernanza de forma nativa en su capa semántica, asegurando que la democratización del dato cumpla estrictamente con las políticas de privacidad y seguridad corporativas.</p>
+            </div>
+            
+            <!-- Panel Catálogo -->
+            <div class="architecture-panel">
+                <div class="arch-header">
+                    <div class="arch-icon">🗂️</div>
+                    <h3>Catálogo de Datos Unificado</h3>
+                </div>
+                <div class="arch-body">
+                    <p>SAP BDC automatiza la recolección de metadatos de fuentes SAP y no SAP, construyendo un catálogo de datos común. Esto permite a los usuarios de negocio buscar, descubrir y comprender los activos de datos disponibles, utilizando terminología empresarial en lugar de tecnicismos, y fomentando el auto-servicio seguro.</p>
+                    <div class="arch-features">
+                        <div class="arch-feature-item">
+                            <h4>Descubrimiento Intuitivo</h4>
+                            <p>Democratiza el acceso permitiendo a los analistas encontrar rápidamente los <em>Data Products</em> relevantes y certificados para sus informes.</p>
+                        </div>
+                        <div class="arch-feature-item">
+                            <h4>Glosario de Negocio</h4>
+                            <p>Alinea a toda la organización bajo las mismas definiciones semánticas, eliminando las discrepancias en los KPIs críticos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Seguridad -->
+            <div class="architecture-panel" style="border-left-color: var(--accent-cyan);">
+                <div class="arch-header">
+                    <div class="arch-icon">🔐</div>
+                    <h3>Seguridad y Control de Acceso Centralizado</h3>
+                </div>
+                <div class="arch-body">
+                    <p>En una arquitectura de <em>Data Fabric</em>, el control es fundamental. BDC permite centralizar la definición de políticas de privacidad y permisos de acceso. Estas reglas de autorización se heredan y aplican automáticamente sin importar desde dónde se consuma el dato (ya sea en SAC, SAP Databricks o mediante BDC Connect).</p>
+                    <div class="arch-features">
+                        <div class="arch-feature-item">
+                            <h4>Protección Zero-Trust</h4>
+                            <p>Garantiza que solo los usuarios o modelos de IA autorizados puedan acceder a información sensible o PII (Personal Identifiable Information).</p>
+                        </div>
+                        <div class="arch-feature-item">
+                            <h4>Autorizaciones a Nivel de Fila</h4>
+                            <p>Las restricciones geográficas o jerárquicas heredadas del ERP (SAP S/4HANA) se mantienen intactas en la capa analítica.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Linaje -->
+            <div class="architecture-panel" style="border-left-color: var(--accent-gold);">
+                <div class="arch-header">
+                    <div class="arch-icon">🧭</div>
+                    <h3>Linaje de Datos y Trazabilidad</h3>
+                </div>
+                <div class="arch-body">
+                    <p>Para construir confianza, es necesario entender el origen del dato. SAP BDC proporciona un linaje de datos de extremo a extremo, permitiendo visualizar visualmente el viaje de la información desde el sistema transaccional origen hasta el cuadro de mando final o modelo predictivo.</p>
+                    <div class="arch-features">
+                        <div class="arch-feature-item">
+                            <h4>Auditoría Transparente</h4>
+                            <p>Facilita drásticamente el cumplimiento normativo y las auditorías internas al demostrar exactamente cómo se ha transformado el dato.</p>
+                        </div>
+                        <div class="arch-feature-item">
+                            <h4>Análisis de Impacto</h4>
+                            <p>Permite a los ingenieros de datos evaluar proactivamente cómo un cambio en un sistema origen afectará a los reportes y aplicaciones conectadas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- SECCIÓN 2: EL VALOR DEL GOBIERNO PARA LA IA -->
+        <section>
+            <div class="section-header">
+                <span class="section-badge">AI Trust Foundation</span>
+                <h2>Gobierno de Datos: El Cimiento de la IA Confiable</h2>
+                <p>No existe una Inteligencia Artificial empresarial útil sin una base de datos gobernada y con contexto. SAP BDC asegura que tus iniciativas de IA entreguen resultados precisos, seguros y alineados con tu negocio.</p>
+            </div>
+            
+            <div class="value-container">
+                <div class="value-grid">
+                    
+                    <div class="value-item" style="border-bottom: none; padding-bottom: 0;">
+                        <div class="value-content" style="width: 100%;">
+                            <h3 style="margin-bottom: 1.5rem;">Impacto Directo de la Gobernanza en Modelos Avanzados</h3>
+                            <p style="font-size: 1.15rem; margin-bottom: 2.5rem;">Cuando SAP Databricks, las <em>Intelligent Apps</em> o SAP Joule operan sobre la capa semántica de BDC, lo hacen sobre un terreno seguro. La gobernanza de datos actúa como el guardián que previene los mayores riesgos asociados a la IA generativa y analítica.</p>
+                            
+                            <div class="ai-benefits-grid">
+                                <div class="ai-benefit-card">
+                                    <h4>Prevención de Alucinaciones</h4>
+                                    <p>Al anclar los modelos de lenguaje (LLMs) y herramientas de IA al glosario de negocio y contexto de SAP, se reduce drásticamente el riesgo de que la IA genere respuestas incorrectas o inventadas.</p>
+                                </div>
+                                <div class="ai-benefit-card" style="border-top-color: var(--primary-blue);">
+                                    <h4>IA Ética y Segura</h4>
+                                    <p>El control de accesos centralizado garantiza que la Inteligencia Artificial jamás exponga datos confidenciales (como salarios o costes) a empleados que no tienen los permisos explícitos para verlos.</p>
+                                </div>
+                                <div class="ai-benefit-card" style="border-top-color: var(--accent-cyan);">
+                                    <h4>Calidad para Machine Learning</h4>
+                                    <p>Los científicos de datos en SAP Databricks pueden entrenar modelos más precisos al utilizar los <em>Data Products</em> certificados por BDC, trabajando sobre una "única versión de la verdad" limpia y auditada.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <img src="https://www.stratesys-ts.com/wp-content/themes/str_theme/assets/img/str_logo_trans.png" alt="Stratesys Logo Gris">
+        <p>&copy; 2026 Stratesys Technology Solutions All Rights Reserved - Confidential.</p>
+        <p style="font-size: 0.9rem;">Portal de Conocimiento Arquitectónico SAP Business Data Cloud | <strong>technology 4GOOD</strong></p>
+    </footer>
+
+</body>
+</html>
